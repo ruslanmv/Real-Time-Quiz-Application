@@ -21,7 +21,9 @@
         <input type="range" id="start-question" min="1" max="10" value="1" class="form-range mt-2 mb-2" oninput="updateSliderValue(this.value)">
         <input type="number" id="start-question-number" min="1" max="10" value="1" class="form-control" oninput="updateSliderValue(this.value)">
         <p id="question-start-display" class="mt-2">Starting from question 1.</p>
-        <button onclick="restartQuiz()" class="btn btn-success mt-3">Start New Quiz</button><br><br>
+        <button onclick="loadQuiz()" class="btn btn-info mt-3">Load Quiz</button><br><br>
+        <button onclick="startQuiz()" class="btn btn-success mt-3">Start Quiz</button><br><br>
+        <button onclick="restartQuiz()" class="btn btn-warning mt-3">Restart</button><br><br>
         <button onclick="checkAnswers()" class="btn btn-primary mt-2">Check Answers</button><br><br>
         <button onclick="nextQuestion()" class="btn btn-secondary mt-2">Next Question</button><br><br>
         <button onclick="endQuiz()" id="end-quiz" class="btn btn-danger mt-2" disabled>End Quiz</button>

@@ -26,8 +26,13 @@ function submitForm(event) {
 function selectExam() {
     const examName = document.getElementById('exam-selector').value;
     const startQuestion = document.getElementById('start-question-number').value;
-    socket.emit('select_exam', { exam_name: examName, start_question: parseInt(startQuestion) });
     document.getElementById('question-start-display').textContent = `Starting from question ${startQuestion}.`;
+}
+
+function loadQuiz() {
+    const examName = document.getElementById('exam-selector').value;
+    const startQuestion = document.getElementById('start-question-number').value;
+    socket.emit('load_quiz', { exam_name: examName, start_question: parseInt(startQuestion) });
 }
 
 function updateSliderValue(value) {
@@ -36,29 +41,9 @@ function updateSliderValue(value) {
     document.getElementById('question-start-display').textContent = `Starting from question ${value}.`;
 }
 
-socket.on('exam_loaded', (data) => {
-    if (data.success) {
-        alert(`Exam "${data.exam_name}" loaded successfully!`);
-    } else {
-        alert(`Failed to load exam "${data.exam_name}".`);
-    }
-});
-
-socket.on('update_participants', (data) => {
-    document.getElementById('participant-count').textContent = data.count;
-});
-
-socket.on('new_question', (data) => {
-    document.getElementById('waiting-message').style.display = 'none';
-    document.getElementById('question-text').innerText = data.question;
-    const letters = ['a', 'b', 'c', 'd'];
-    const options = data.options.map((opt, index) =>
-        `<input type="radio" id="${letters[index]}" name="answer" value="${opt}">
-        <label for="${letters[index]}">${letters[index]}) ${opt}</label><br>`
-    ).join('');
-    document.getElementById('options').innerHTML = options;
-    document.getElementById('end-quiz').disabled = false;
-});
+function startQuiz() {
+    socket.emit('start_quiz');
+}
 
 function checkAnswers() {
     socket.emit('check_answers');
@@ -75,6 +60,25 @@ function endQuiz() {
 function restartQuiz() {
     socket.emit('restart_quiz');
 }
+
+socket.on('quiz_loaded', (data) => {
+    if (data.success) {
+        alert(`Quiz loaded with ${data.num_questions} questions, starting from question ${data.start_question}.`);
+    } else {
+        alert(`Failed to load quiz.`);
+    }
+});
+
+socket.on('new_question', (data) => {
+    document.getElementById('waiting-message').style.display = 'none';
+    document.getElementById('question-text').innerText = data.question;
+    const letters = ['a', 'b', 'c', 'd'];
+    const options = data.options.map((opt, index) =>
+        `<input type="radio" id="${letters[index]}" name="answer" value="${opt}">
+        <label for="${letters[index]}">${letters[index]}) ${opt}</label><br>`
+    ).join('');
+    document.getElementById('options').innerHTML = options;
+});
 
 socket.on('display_results', (data) => {
     const img = `<img src="data:image/png;base64,${data.chart}" alt="Results Chart" />`;

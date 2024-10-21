@@ -45,8 +45,8 @@ def on_leave():
         emit('update_participants', {"participants": participants, "count": len(participants)}, room='quiz')
         print(f"{username} left the quiz.")
 
-@socketio.on('select_exam')
-def select_exam(data):
+@socketio.on('load_quiz')
+def load_quiz(data):
     global selected_questions
     exam_name = data['exam_name']
     start_question = data['start_question'] - 1  # Adjust for 0-based indexing
@@ -54,22 +54,22 @@ def select_exam(data):
     if selected_questions:
         num_questions = len(selected_questions)
         current_question['index'] = start_question
-        emit('exam_loaded', {"success": True, "exam_name": exam_name, "num_questions": num_questions, "start_question": start_question + 1}, room=request.sid)
+        emit('quiz_loaded', {"success": True, "num_questions": num_questions, "start_question": start_question + 1}, room=request.sid)
     else:
-        emit('exam_loaded', {"success": False, "exam_name": exam_name}, room=request.sid)
+        emit('quiz_loaded', {"success": False}, room=request.sid)
+
+@socketio.on('start_quiz')
+def start_quiz():
+    if participants and selected_questions:
+        current_question['started'] = True
+        emit('new_question', selected_questions[current_question['index']], room='quiz')
+        emit('enable_end_quiz', room='quiz')
 
 @socketio.on('restart_quiz')
 def restart_quiz():
     reset_quiz()
+    emit('quiz_reset', room='quiz')
     start_quiz()
-
-def start_quiz():
-    current_question['started'] = True
-    index = current_question['index']
-    if index < len(selected_questions):
-        question = selected_questions[index]
-        emit('new_question', question, room='quiz')
-        emit('enable_end_quiz', room='quiz')
 
 @socketio.on('submit_answer')
 def receive_answer(data):
@@ -115,10 +115,10 @@ def end_quiz():
     emit('display_final_results', final_results, room='quiz')
 
 def generate_chart(answers, options):
-    letters = ['A', 'B', 'C', 'D']
+    letters = [chr(65 + i) for i in range(len(options))]
     counts = [list(answers.values()).count(option) for option in options]
     plt.figure(figsize=(6, 4))
-    plt.bar(letters[:len(options)], counts)
+    plt.bar(letters, counts)
     plt.xlabel('Options')
     plt.ylabel('Number of Votes')
     plt.title('Results')
