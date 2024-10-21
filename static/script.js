@@ -72,10 +72,11 @@ socket.on('quiz_loaded', (data) => {
 socket.on('new_question', (data) => {
     document.getElementById('waiting-message').style.display = 'none';
     document.getElementById('question-text').innerText = data.question;
-    const letters = ['a', 'b', 'c', 'd'];
+    // Dynamically generate letters for options (up to 'h')
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; 
     const options = data.options.map((opt, index) =>
         `<input type="radio" id="${letters[index]}" name="answer" value="${opt}">
-        <label for="${letters[index]}">${letters[index]}) ${opt}</label><br>`
+         <label for="${letters[index]}">${letters[index]}) ${opt}</label><br>`
     ).join('');
     document.getElementById('options').innerHTML = options;
 });
@@ -87,7 +88,7 @@ socket.on('display_results', (data) => {
 });
 
 socket.on('enable_end_quiz', () => {
-    document.getElementById('end-quiz').disabled = false;
+    document.getElementById('end-quiz').disabled = false; // Enable the "End Quiz" button
 });
 
 socket.on('clear_results', () => {
