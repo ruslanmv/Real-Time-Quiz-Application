@@ -25,14 +25,19 @@ function submitForm(event) {
 
 function selectExam() {
     const examName = document.getElementById('exam-selector').value;
-    const startQuestion = document.getElementById('start-question').value;
+    const startQuestion = document.getElementById('start-question-number').value;
     socket.emit('select_exam', { exam_name: examName, start_question: parseInt(startQuestion) });
+    document.getElementById('question-start-display').textContent = `Starting from question ${startQuestion}.`;
+}
+
+function updateSliderValue(value) {
+    document.getElementById('start-question').value = value;
+    document.getElementById('start-question-number').value = value;
+    document.getElementById('question-start-display').textContent = `Starting from question ${value}.`;
 }
 
 socket.on('exam_loaded', (data) => {
     if (data.success) {
-        document.getElementById('question-count').textContent = 
-            `Exam "${data.exam_name}" loaded with ${data.num_questions} questions. Starting from question ${data.start_question}.`;
         alert(`Exam "${data.exam_name}" loaded successfully!`);
     } else {
         alert(`Failed to load exam "${data.exam_name}".`);

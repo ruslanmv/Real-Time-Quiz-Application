@@ -60,6 +60,7 @@ def select_exam(data):
 
 @socketio.on('restart_quiz')
 def restart_quiz():
+    reset_quiz()
     start_quiz()
 
 def start_quiz():
