@@ -15,14 +15,19 @@ A Python-based real-time quiz application designed to mimic the functionality of
 ```bash
 Real-Time-Quiz-Application/
 │
+│
 ├── app.py                # Main Flask application
+├── backend.py            # Backend logic for loading and managing exams
 ├── templates/
 │   ├── index.html        # Main index page with client and host buttons
 │   ├── client.html       # Client interface
 │   └── host.html         # Host interface
 ├── static/
-│   ├── style.css         # Optional custom styles (Bootstrap already integrated)
+│   ├── style.css         # Custom styles to mimic the OnVUE exam appearance
 │   └── script.js         # JavaScript for real-time interactions
+├── questions/            # Folder containing exam JSON files
+│   ├── exam1.json        # Example JSON file for exam 1
+│   ├── exam2.json        # Example JSON file for exam 2
 ├── requirements.txt      # Python dependencies
 └── README.md             # Project documentation
 ```
@@ -57,12 +62,12 @@ pip install -r requirements.txt
    ```bash
    python app.py
    ```
-![](assets/2024-10-21-12-08-37.png)
+![](assets/2024-10-21-17-07-42.png)
 4. **Access the application**:
    - **Host interface**: [http://127.0.0.1:5000/host](http://127.0.0.1:5000/host)
- ![](assets/2024-10-21-12-09-25.png)  
+![](assets/2024-10-21-17-08-13.png)
    - **Client interface**: [http://127.0.0.1:5000/client](http://127.0.0.1:5000/client)
-![](assets/2024-10-21-12-10-42.png)
+![](assets/2024-10-21-17-09-15.png)
 ## Application Overview
 
 ### Host Interface
