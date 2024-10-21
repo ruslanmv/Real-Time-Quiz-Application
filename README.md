@@ -69,7 +69,7 @@ pip install -r requirements.txt
    - **Client interface**: [http://127.0.0.1:5000/client](http://127.0.0.1:5000/client)
 ![](assets/2024-10-21-17-09-15.png)
 ## Application Overview
-
+![](assets/2024-10-21-17-18-28.png)
 ### Host Interface
 
 The host controls the flow of the quiz:
