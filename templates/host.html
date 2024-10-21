@@ -11,6 +11,12 @@
     <div class="container">
         <h2>Quiz Host</h2>
         <p>Participants connected: <span id="participant-count">0</span></p>
+        <select id="exam-selector" class="form-control" onchange="selectExam()">
+            <option value="" disabled selected>Select an exam</option>
+            {% for exam in exams %}
+                <option value="{{ exam }}">{{ exam }}</option>
+            {% endfor %}
+        </select>
         <button onclick="restartQuiz()" class="btn btn-success mt-3">Start New Quiz</button>
         <button onclick="checkAnswers()" class="btn btn-primary mt-2">Check Answers</button>
         <button onclick="nextQuestion()" class="btn btn-secondary mt-2">Next Question</button>

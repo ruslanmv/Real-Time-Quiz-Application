@@ -12,6 +12,30 @@ function joinQuiz() {
     document.getElementById('join-title').style.display = 'none';
 }
 
+function submitForm(event) {
+    event.preventDefault();
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        const answer = selectedOption.value;
+        socket.emit('submit_answer', { answer });
+    } else {
+        alert("Please select an option before submitting.");
+    }
+}
+
+function selectExam() {
+    const examName = document.getElementById('exam-selector').value;
+    socket.emit('select_exam', examName);
+}
+
+socket.on('exam_loaded', (data) => {
+    if (data.success) {
+        alert(`Exam "${data.exam_name}" loaded successfully!`);
+    } else {
+        alert(`Failed to load exam "${data.exam_name}".`);
+    }
+});
+
 socket.on('update_participants', (data) => {
     document.getElementById('participant-count').textContent = data.count;
 });
@@ -26,12 +50,6 @@ socket.on('new_question', (data) => {
     ).join('');
     document.getElementById('options').innerHTML = options;
 });
-
-function submitForm(event) {
-    event.preventDefault();
-    const answer = document.querySelector('input[name="answer"]:checked').value;
-    socket.emit('submit_answer', { answer });
-}
 
 function checkAnswers() {
     socket.emit('check_answers');
