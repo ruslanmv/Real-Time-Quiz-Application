@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Client</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Join the Quiz</h2>
+        <input type="text" id="username" placeholder="Enter your name" class="form-control">
+        <button onclick="joinQuiz()" class="btn btn-primary mt-2">Join</button>
+        <div id="quiz-content" style="display: none;">
+            <h3 id="question-text"></h3>
+            <div id="options"></div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
