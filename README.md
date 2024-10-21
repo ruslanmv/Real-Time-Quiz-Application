@@ -18,6 +18,7 @@ Real-Time-Quiz-Application/
 │
 ├── app.py                # Main Flask application
 ├── templates/
+│   ├── index.html        # Main index page with client and host buttons
 │   ├── client.html       # Client interface
 │   └── host.html         # Host interface
 ├── static/
