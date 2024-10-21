@@ -1,4 +1,3 @@
-Here's a professional `README.md` for the quiz application project:
 # Real-Time Quiz Application
 
 A Python-based real-time quiz application designed to mimic the functionality of **Mentimeter**, allowing a host to control the quiz and participants (clients) to join, answer questions, and receive immediate feedback. The application is built using **Flask** and **Socket.IO** for seamless web-based interaction, and it offers a clean, responsive front-end using **HTML**, **CSS**, and **Bootstrap**.
