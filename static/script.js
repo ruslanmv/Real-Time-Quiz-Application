@@ -9,6 +9,7 @@ function joinQuiz() {
     document.getElementById('logged-user').textContent = username;
     document.getElementById('quiz-content').style.display = 'block';
     document.getElementById('waiting-message').style.display = 'block';
+    document.getElementById('join-title').style.display = 'none';
 }
 
 socket.on('update_participants', (data) => {

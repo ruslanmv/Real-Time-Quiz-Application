@@ -19,7 +19,7 @@ participants = {}
 
 @app.route('/')
 def index():
-    return "Welcome to the Quiz App"
+    return render_template('index.html')
 
 @app.route('/client')
 def client():
