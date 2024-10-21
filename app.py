@@ -85,6 +85,8 @@ def check_answers():
             if current_question['answers'].get(participant["username"]) == correct_answer:
                 participants[sid]["score"] += 1
 
+        emit('enable_end_quiz', room='quiz')  # Enable the "End Quiz" button
+
 @socketio.on('next_question')
 def next_question():
     current_question['index'] += 1
@@ -95,12 +97,18 @@ def next_question():
         emit('new_question', question, room='quiz')
     else:
         final_results = calculate_final_results()
-        emit('quiz_end', final_results, room='quiz')
+        emit('display_final_results', final_results, room='quiz')
+
+@socketio.on('end_quiz')
+def end_quiz():
+    final_results = calculate_final_results()
+    emit('display_final_results', final_results, room='quiz')
 
 @socketio.on('restart_quiz')
 def restart_quiz():
     reset_quiz()
     emit('quiz_reset', room='quiz')
+    start_quiz()  # Automatically start the quiz again after reset
 
 def generate_chart(answers, options):
     counts = [list(answers.values()).count(option) for option in options]
@@ -118,8 +126,8 @@ def generate_chart(answers, options):
     return chart_base64
 
 def calculate_final_results():
-    results = {participant["username"]: participant["score"] for participant in participants.values()}
-    return results
+    sorted_scores = sorted(participants.values(), key=lambda x: x['score'], reverse=True)
+    return [{"username": p["username"], "score": p["score"]} for p in sorted_scores]
 
 def reset_quiz():
     global questions, current_question

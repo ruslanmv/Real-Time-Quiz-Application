@@ -41,6 +41,10 @@ function nextQuestion() {
     socket.emit('next_question');
 }
 
+function endQuiz() {
+    socket.emit('end_quiz');
+}
+
 function restartQuiz() {
     socket.emit('restart_quiz');
 }
@@ -51,20 +55,30 @@ socket.on('display_results', (data) => {
     document.getElementById('results').innerHTML = img + resultText;
 });
 
+socket.on('enable_end_quiz', () => {
+    document.getElementById('end-quiz').disabled = false;
+});
+
 socket.on('clear_results', () => {
     document.getElementById('results').innerHTML = '';
 });
 
-socket.on('quiz_end', (finalResults) => {
-    let resultHtml = '<h3>Final Results</h3>';
-    for (let user in finalResults) {
-        resultHtml += `<p>${user}: ${finalResults[user]} correct answers</p>`;
-    }
-    document.getElementById('results').innerHTML = resultHtml;
+socket.on('display_final_results', (finalResults) => {
+    document.getElementById('quiz-content').style.display = 'none';
+    const resultsTable = document.getElementById('results-table');
+    resultsTable.innerHTML = '';
+    finalResults.forEach((participant) => {
+        const row = `<tr><td>${participant.username}</td><td>${participant.score}</td></tr>`;
+        resultsTable.innerHTML += row;
+    });
+    document.getElementById('final-results').style.display = 'block';
 });
 
 socket.on('quiz_reset', () => {
     document.getElementById('results').innerHTML = '';
     document.getElementById('question-text').innerText = '';
     document.getElementById('options').innerHTML = '';
+    document.getElementById('final-results').style.display = 'none';
+    document.getElementById('quiz-content').style.display = 'block';
+    document.getElementById('waiting-message').style.display = 'block';
 });
