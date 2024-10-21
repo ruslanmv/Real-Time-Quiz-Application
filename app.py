@@ -63,6 +63,8 @@ def start_quiz():
     if participants and selected_questions:
         current_question['started'] = True
         emit('new_question', selected_questions[current_question['index']], room='quiz')
+        # Also emit the question to the host
+        emit('new_question', selected_questions[current_question['index']], room=request.sid) 
         emit('enable_end_quiz', room='quiz')
 
 @socketio.on('restart_quiz')
@@ -105,6 +107,8 @@ def next_question():
         question = selected_questions[current_question['index']]
         emit('clear_results', room='quiz')
         emit('new_question', question, room='quiz')
+        # Also emit the question to the host
+        emit('new_question', question, room=request.sid) 
     else:
         final_results = calculate_final_results()
         emit('display_final_results', final_results, room='quiz')
@@ -115,7 +119,7 @@ def end_quiz():
     emit('display_final_results', final_results, room='quiz')
 
 def generate_chart(answers, options):
-    letters = [chr(65 + i) for i in range(len(options))]
+    letters = [chr(65 + i) for i in range(len(options))] 
     counts = [list(answers.values()).count(option) for option in options]
     plt.figure(figsize=(6, 4))
     plt.bar(letters, counts)
