@@ -25,11 +25,14 @@ function submitForm(event) {
 
 function selectExam() {
     const examName = document.getElementById('exam-selector').value;
-    socket.emit('select_exam', examName);
+    const startQuestion = document.getElementById('start-question').value;
+    socket.emit('select_exam', { exam_name: examName, start_question: parseInt(startQuestion) });
 }
 
 socket.on('exam_loaded', (data) => {
     if (data.success) {
+        document.getElementById('question-count').textContent = 
+            `Exam "${data.exam_name}" loaded with ${data.num_questions} questions. Starting from question ${data.start_question}.`;
         alert(`Exam "${data.exam_name}" loaded successfully!`);
     } else {
         alert(`Failed to load exam "${data.exam_name}".`);
@@ -49,6 +52,7 @@ socket.on('new_question', (data) => {
         <label for="${letters[index]}">${letters[index]}) ${opt}</label><br>`
     ).join('');
     document.getElementById('options').innerHTML = options;
+    document.getElementById('end-quiz').disabled = false;
 });
 
 function checkAnswers() {

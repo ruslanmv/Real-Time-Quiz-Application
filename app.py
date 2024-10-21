@@ -46,18 +46,20 @@ def on_leave():
         print(f"{username} left the quiz.")
 
 @socketio.on('select_exam')
-def select_exam(exam_name):
+def select_exam(data):
     global selected_questions
+    exam_name = data['exam_name']
+    start_question = data['start_question'] - 1  # Adjust for 0-based indexing
     selected_questions = backend.select_exam(exam_name)
     if selected_questions:
-        emit('exam_loaded', {"success": True, "exam_name": exam_name}, room=request.sid)
+        num_questions = len(selected_questions)
+        current_question['index'] = start_question
+        emit('exam_loaded', {"success": True, "exam_name": exam_name, "num_questions": num_questions, "start_question": start_question + 1}, room=request.sid)
     else:
         emit('exam_loaded', {"success": False, "exam_name": exam_name}, room=request.sid)
 
 @socketio.on('restart_quiz')
 def restart_quiz():
-    reset_quiz()
-    emit('quiz_reset', room='quiz')
     start_quiz()
 
 def start_quiz():
@@ -73,8 +75,7 @@ def receive_answer(data):
     username = participants[request.sid]["username"]
     answer = data['answer']
     current_question['answers'][username] = answer
-    if len(current_question['answers']) == len(participants):
-        emit('all_answers_received', room='quiz')
+    print(f"{username} submitted an answer: {answer}")
 
 @socketio.on('check_answers')
 def check_answers():
@@ -113,9 +114,10 @@ def end_quiz():
     emit('display_final_results', final_results, room='quiz')
 
 def generate_chart(answers, options):
+    letters = ['A', 'B', 'C', 'D']
     counts = [list(answers.values()).count(option) for option in options]
     plt.figure(figsize=(6, 4))
-    plt.bar(options, counts)
+    plt.bar(letters[:len(options)], counts)
     plt.xlabel('Options')
     plt.ylabel('Number of Votes')
     plt.title('Results')
