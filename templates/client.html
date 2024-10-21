@@ -12,8 +12,11 @@
         <input type="text" id="username" placeholder="Enter your name" class="form-control">
         <button onclick="joinQuiz()" class="btn btn-primary mt-2">Join</button>
         <div id="quiz-content" style="display: none;">
+            <h3>Logged in as: <span id="logged-user"></span></h3>
+            <h3 id="waiting-message" style="display: none;">Waiting for the Host...</h3>
             <h3 id="question-text"></h3>
             <div id="options"></div>
+            <div id="results" class="mt-4"></div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>

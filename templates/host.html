@@ -9,9 +9,14 @@
 <body>
     <div class="container">
         <h2>Quiz Host</h2>
-        <button onclick="nextQuestion()" class="btn btn-success">Next Question</button>
-        <h3 id="question-text"></h3>
-        <div id="results"></div>
+        <p>Participants connected: <span id="participant-count">0</span></p>
+        <button onclick="startQuiz()" class="btn btn-success">Start Quiz</button>
+        <button onclick="checkAnswers()" class="btn btn-primary mt-2">Check Answers</button>
+        <button onclick="nextQuestion()" class="btn btn-secondary mt-2">Next Question</button>
+        <button onclick="restartQuiz()" class="btn btn-danger mt-2">Start New Quiz</button>
+        <h3 id="question-text" class="mt-4"></h3>
+        <div id="options" class="mt-2"></div>
+        <div id="results" class="mt-4"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <script src="/static/script.js"></script>
