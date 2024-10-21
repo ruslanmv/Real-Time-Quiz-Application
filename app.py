@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
+import backend  # Import backend functions
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
@@ -9,11 +10,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 socketio = SocketIO(app)
 
-questions = [
-    {"question": "What is the capital of France?", "options": ["Paris", "London", "Berlin", "Rome"], "correct": "Paris"},
-    {"question": "What is the largest planet?", "options": ["Earth", "Mars", "Jupiter", "Saturn"], "correct": "Jupiter"}
-]
-initial_questions = questions.copy()  # Keep a copy of the original questions to reset later
+exams = backend.load_question_sets()  # Load available exams
+selected_questions = []  # Global variable to store the selected questions
 current_question = {"index": 0, "answers": {}, "started": False}
 participants = {}
 
@@ -27,12 +25,12 @@ def client():
 
 @app.route('/host')
 def host():
-    return render_template('host.html')
+    return render_template('host.html', exams=exams)
 
 @socketio.on('join')
 def on_join(data):
     username = data['username']
-    user_id_number = random.randint(1000, 9999)  # Generate a unique ID for the user
+    user_id_number = random.randint(1000, 9999)
     participants[request.sid] = {"user_id_number": user_id_number, "username": username, "score": 0}
     join_room('quiz')
     emit('update_participants', {"participants": participants, "count": len(participants)}, room='quiz')
@@ -47,28 +45,46 @@ def on_leave():
         emit('update_participants', {"participants": participants, "count": len(participants)}, room='quiz')
         print(f"{username} left the quiz.")
 
+@socketio.on('load_quiz')
+def load_quiz(data):
+    global selected_questions
+    exam_name = data['exam_name']
+    start_question = data['start_question'] - 1  # Adjust for 0-based indexing
+    selected_questions = backend.select_exam(exam_name)
+    if selected_questions:
+        num_questions = len(selected_questions)
+        current_question['index'] = start_question
+        emit('quiz_loaded', {"success": True, "num_questions": num_questions, "start_question": start_question + 1}, room=request.sid)
+    else:
+        emit('quiz_loaded', {"success": False}, room=request.sid)
+
 @socketio.on('start_quiz')
 def start_quiz():
-    reset_quiz()  # Reset the quiz state before starting
-    current_question['started'] = True
-    index = current_question['index']
-    if index < len(questions):
-        question = questions[index]
-        emit('new_question', question, room='quiz')
+    if participants and selected_questions:
+        current_question['started'] = True
+        emit('new_question', selected_questions[current_question['index']], room='quiz')
+        # Also emit the question to the host 
+        emit('new_question', selected_questions[current_question['index']], room=request.sid)  
+        emit('enable_end_quiz', room=request.sid) # Enable "End Quiz" for the host
+
+@socketio.on('restart_quiz')
+def restart_quiz():
+    reset_quiz()
+    emit('quiz_reset', room='quiz')
+    start_quiz()
 
 @socketio.on('submit_answer')
 def receive_answer(data):
     username = participants[request.sid]["username"]
     answer = data['answer']
     current_question['answers'][username] = answer
-    if len(current_question['answers']) == len(participants):
-        emit('all_answers_received', room='quiz')
+    print(f"{username} submitted an answer: {answer}")
 
 @socketio.on('check_answers')
 def check_answers():
     index = current_question['index']
-    if index < len(questions):
-        question = questions[index]
+    if index < len(selected_questions):
+        question = selected_questions[index]
         correct_answer = question['correct']
         results = {
             "question": question["question"],
@@ -76,11 +92,9 @@ def check_answers():
             "correct_answer": correct_answer
         }
 
-        # Generate the chart and encode it as base64
         chart_base64 = generate_chart(current_question["answers"], question["options"])
         emit('display_results', {"results": results, "chart": chart_base64}, room='quiz')
 
-        # Update scores based on user_id_number
         for sid, participant in participants.items():
             if current_question['answers'].get(participant["username"]) == correct_answer:
                 participants[sid]["score"] += 1
@@ -89,23 +103,29 @@ def check_answers():
 def next_question():
     current_question['index'] += 1
     current_question['answers'] = {}
-    if current_question['index'] < len(questions):
-        question = questions[current_question['index']]
-        emit('clear_results', room='quiz')  # Clear previous results and plot
+    if current_question['index'] < len(selected_questions):
+        question = selected_questions[current_question['index']]
+        emit('clear_results', room='quiz')
         emit('new_question', question, room='quiz')
+        # Also emit the question to the host
+        emit('new_question', question, room=request.sid)  
     else:
         final_results = calculate_final_results()
-        emit('quiz_end', final_results, room='quiz')
+        emit('display_final_results', final_results, room='quiz')
 
-@socketio.on('restart_quiz')
-def restart_quiz():
-    reset_quiz()
-    emit('quiz_reset', room='quiz')
+@socketio.on('end_quiz')
+def end_quiz():
+    if current_question['started']:  # Ensure the quiz has started before ending it
+        final_results = calculate_final_results()
+        emit('display_final_results', final_results, room='quiz')
+        reset_quiz()  # Reset the quiz state
+
 
 def generate_chart(answers, options):
+    letters = [chr(65 + i) for i in range(len(options))] # Dynamically generate letters for options
     counts = [list(answers.values()).count(option) for option in options]
     plt.figure(figsize=(6, 4))
-    plt.bar(options, counts)
+    plt.bar(letters, counts)
     plt.xlabel('Options')
     plt.ylabel('Number of Votes')
     plt.title('Results')
@@ -118,12 +138,11 @@ def generate_chart(answers, options):
     return chart_base64
 
 def calculate_final_results():
-    results = {participant["username"]: participant["score"] for participant in participants.values()}
-    return results
+    sorted_scores = sorted(participants.values(), key=lambda x: x['score'], reverse=True)
+    return [{"username": p["username"], "score": p["score"]} for p in sorted_scores]
 
 def reset_quiz():
-    global questions, current_question
-    questions = initial_questions.copy()
+    global selected_questions, current_question
     current_question = {"index": 0, "answers": {}, "started": False}
     for participant in participants.values():
         participant["score"] = 0

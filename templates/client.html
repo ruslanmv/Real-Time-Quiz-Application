@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Client</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
@@ -14,9 +15,27 @@
         <div id="quiz-content" style="display: none;">
             <h3>Logged in as: <span id="logged-user"></span></h3>
             <h3 id="waiting-message" style="display: none;">Waiting for the Host...</h3>
-            <h3 id="question-text"></h3>
-            <div id="options"></div>
+            <div id="question-section" class="mt-4">
+                <form id="quiz-form" onsubmit="submitForm(event)">
+                    <p id="question-text"></p>
+                    <div id="options"></div>
+                    <input type="submit" value="Submit" class="btn btn-primary mt-2">
+                </form>
+            </div>
             <div id="results" class="mt-4"></div>
+        </div>
+        <div id="final-results" style="display: none;" class="mt-4">
+            <h3>And the Winners are:</h3>
+            <table class="table mt-2">
+                <thead>
+                    <tr>
+                        <th>Participant</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table">
+                </tbody>
+            </table>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
