@@ -10,11 +10,10 @@
     <div class="container">
         <h2>Quiz Host</h2>
         <p>Participants connected: <span id="participant-count">0</span></p>
-        <button onclick="startQuiz()" class="btn btn-success">Start Quiz</button>
+        <button onclick="restartQuiz()" class="btn btn-success mt-3">Start New Quiz</button>
         <button onclick="checkAnswers()" class="btn btn-primary mt-2">Check Answers</button>
         <button onclick="nextQuestion()" class="btn btn-secondary mt-2">Next Question</button>
         <button onclick="endQuiz()" id="end-quiz" class="btn btn-danger mt-2" disabled>End Quiz</button>
-        <button onclick="restartQuiz()" class="btn btn-warning mt-2">Start New Quiz</button>
         <h3 id="question-text" class="mt-4"></h3>
         <div id="options" class="mt-2"></div>
         <div id="results" class="mt-4"></div>

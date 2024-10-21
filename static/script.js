@@ -29,10 +29,6 @@ function submitAnswer(answer) {
     socket.emit('submit_answer', { answer: answer });
 }
 
-function startQuiz() {
-    socket.emit('start_quiz');
-}
-
 function checkAnswers() {
     socket.emit('check_answers');
 }

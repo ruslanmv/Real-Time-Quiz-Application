@@ -47,14 +47,19 @@ def on_leave():
         emit('update_participants', {"participants": participants, "count": len(participants)}, room='quiz')
         print(f"{username} left the quiz.")
 
-@socketio.on('start_quiz')
+@socketio.on('restart_quiz')
+def restart_quiz():
+    reset_quiz()  # Reset the quiz state
+    emit('quiz_reset', room='quiz')
+    start_quiz()  # Automatically start the quiz after reset
+
 def start_quiz():
-    reset_quiz()  # Reset the quiz state before starting
     current_question['started'] = True
     index = current_question['index']
     if index < len(questions):
         question = questions[index]
         emit('new_question', question, room='quiz')
+        emit('enable_end_quiz', room='quiz')  # Enable the "End Quiz" button when the quiz starts
 
 @socketio.on('submit_answer')
 def receive_answer(data):
@@ -85,8 +90,6 @@ def check_answers():
             if current_question['answers'].get(participant["username"]) == correct_answer:
                 participants[sid]["score"] += 1
 
-        emit('enable_end_quiz', room='quiz')  # Enable the "End Quiz" button
-
 @socketio.on('next_question')
 def next_question():
     current_question['index'] += 1
@@ -103,12 +106,6 @@ def next_question():
 def end_quiz():
     final_results = calculate_final_results()
     emit('display_final_results', final_results, room='quiz')
-
-@socketio.on('restart_quiz')
-def restart_quiz():
-    reset_quiz()
-    emit('quiz_reset', room='quiz')
-    start_quiz()  # Automatically start the quiz again after reset
 
 def generate_chart(answers, options):
     counts = [list(answers.values()).count(option) for option in options]
