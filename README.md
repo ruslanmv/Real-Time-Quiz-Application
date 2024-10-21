@@ -58,11 +58,12 @@ pip install -r requirements.txt
    ```bash
    python app.py
    ```
-
+![](assets/2024-10-21-12-08-37.png)
 4. **Access the application**:
    - **Host interface**: [http://127.0.0.1:5000/host](http://127.0.0.1:5000/host)
+ ![](assets/2024-10-21-12-09-25.png)  
    - **Client interface**: [http://127.0.0.1:5000/client](http://127.0.0.1:5000/client)
-
+![](assets/2024-10-21-12-10-42.png)
 ## Application Overview
 
 ### Host Interface
