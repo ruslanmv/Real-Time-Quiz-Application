@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import backend  # Import backend functions
@@ -66,7 +65,7 @@ def start_quiz():
         emit('new_question', selected_questions[current_question['index']], room='quiz')
         # Also emit the question to the host 
         emit('new_question', selected_questions[current_question['index']], room=request.sid)  
-        emit('enable_end_quiz', room='quiz')
+        emit('enable_end_quiz', room=request.sid) # Enable "End Quiz" for the host
 
 @socketio.on('restart_quiz')
 def restart_quiz():
@@ -116,8 +115,11 @@ def next_question():
 
 @socketio.on('end_quiz')
 def end_quiz():
-    final_results = calculate_final_results()
-    emit('display_final_results', final_results, room='quiz')
+    if current_question['started']:  # Ensure the quiz has started before ending it
+        final_results = calculate_final_results()
+        emit('display_final_results', final_results, room='quiz')
+        reset_quiz()  # Reset the quiz state
+
 
 def generate_chart(answers, options):
     letters = [chr(65 + i) for i in range(len(options))] # Dynamically generate letters for options
