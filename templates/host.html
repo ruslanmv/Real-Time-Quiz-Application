@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Host</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
@@ -14,8 +15,10 @@
         <button onclick="checkAnswers()" class="btn btn-primary mt-2">Check Answers</button>
         <button onclick="nextQuestion()" class="btn btn-secondary mt-2">Next Question</button>
         <button onclick="endQuiz()" id="end-quiz" class="btn btn-danger mt-2" disabled>End Quiz</button>
-        <h3 id="question-text" class="mt-4"></h3>
-        <div id="options" class="mt-2"></div>
+        <div id="question-section" class="mt-4">
+            <p id="question-text"></p>
+            <div id="options"></div>
+        </div>
         <div id="results" class="mt-4"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>

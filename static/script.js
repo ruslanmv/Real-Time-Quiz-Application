@@ -19,14 +19,18 @@ socket.on('update_participants', (data) => {
 socket.on('new_question', (data) => {
     document.getElementById('waiting-message').style.display = 'none';
     document.getElementById('question-text').innerText = data.question;
-    const options = data.options.map((opt) =>
-        `<button onclick="submitAnswer('${opt}')" class="btn btn-secondary">${opt}</button>`
+    const letters = ['a', 'b', 'c', 'd'];
+    const options = data.options.map((opt, index) =>
+        `<input type="radio" id="${letters[index]}" name="answer" value="${opt}">
+        <label for="${letters[index]}">${letters[index]}) ${opt}</label><br>`
     ).join('');
     document.getElementById('options').innerHTML = options;
 });
 
-function submitAnswer(answer) {
-    socket.emit('submit_answer', { answer: answer });
+function submitForm(event) {
+    event.preventDefault();
+    const answer = document.querySelector('input[name="answer"]:checked').value;
+    socket.emit('submit_answer', { answer });
 }
 
 function checkAnswers() {

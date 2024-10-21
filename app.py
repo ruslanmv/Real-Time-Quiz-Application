@@ -10,7 +10,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 socketio = SocketIO(app)
 
 questions = [
-    {"question": "What is the capital of France?", "options": ["Paris", "London", "Berlin", "Rome"], "correct": "Paris"},
+    {"question": "What is the capital of France?", "options": ["Berlin", "Paris", "Rome", "Madrid"], "correct": "Paris"},
     {"question": "What is the largest planet?", "options": ["Earth", "Mars", "Jupiter", "Saturn"], "correct": "Jupiter"}
 ]
 initial_questions = questions.copy()  # Keep a copy of the original questions to reset later
