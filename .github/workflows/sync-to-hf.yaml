@@ -16,7 +16,6 @@ jobs:
       # Step to replace README.md with README_HF.md
       - name: Replace README.md for Hugging Face
         run: |
-          mv README.md README_GITHUB.md
           cp README_HF.md README.md
 
       # Push to Hugging Face Space
