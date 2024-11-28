@@ -1,0 +1,33 @@
+name: Sync to Hugging Face Space
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      # Step to replace README.md with README_HF.md
+      - name: Replace README.md for Hugging Face
+        run: |
+          mv README.md README_GITHUB.md
+          cp README_HF.md README.md
+
+      # Push to Hugging Face Space
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git remote add space https://huggingface.co/spaces/ruslanmv/Real-Time-Quiz-Application || true
+          git push --force https://ruslanmv:${HF_TOKEN}@huggingface.co/spaces/ruslanmv/Real-Time-Quiz-Application main
+
+      # Step to restore original README.md
+      - name: Restore GitHub README.md
+        run: |
+          mv README_GITHUB.md README.md

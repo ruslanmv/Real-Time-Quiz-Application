@@ -25,5 +25,5 @@ COPY --chown=user . /app
 # Expose the application port (7860) for Hugging Face Spaces
 EXPOSE 7860
 
-# Set the command to run the application using Uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
+# Set the command to run the application using Flask-SocketIO and eventlet
+CMD ["python", "app.py"]

@@ -17,10 +17,10 @@
                 <option value="{{ exam }}">{{ exam }}</option>
             {% endfor %}
         </select>
-        <label for="start-question" class="mt-3">Select starting question:</label>
-        <input type="range" id="start-question" min="1" max="10" value="1" class="form-range mt-2 mb-2" oninput="updateSliderValue(this.value)">
-        <input type="number" id="start-question-number" min="1" max="10" value="1" class="form-control" oninput="updateSliderValue(this.value)">
-        <p id="question-start-display" class="mt-2">Starting from question 1.</p>
+        <label for="start-question" id="start-question-label" class="mt-3" style="display: none;">Select starting question:</label>
+        <input type="range" id="start-question" min="1" max="10" value="1" class="form-range mt-2 mb-2" style="display: none;" oninput="updateSliderValue(this.value)">
+        <input type="number" id="start-question-number" min="1" max="10" value="1" class="form-control" style="display: none;" oninput="updateSliderValue(this.value)">
+        <p id="question-start-display" class="mt-2" style="display: none;">Starting from question 1.</p>        
         <button onclick="loadQuiz()" class="btn btn-info mt-3">Load Quiz</button><br><br>
         <button onclick="startQuiz()" class="btn btn-success mt-3">Start Quiz</button><br><br>
         <button onclick="restartQuiz()" class="btn btn-warning mt-3">Restart</button><br><br>

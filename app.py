@@ -1,3 +1,6 @@
+import eventlet
+# Force eventlet to be used as the async mode for Flask-SocketIO
+eventlet.monkey_patch()
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import backend  # Import backend functions
@@ -5,10 +8,13 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 import random
+import logging
 
+# Configure the logging level
+logging.getLogger('eventlet.wsgi.server').setLevel(logging.ERROR)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 exams = backend.load_question_sets()  # Load available exams
 selected_questions = []  # Global variable to store the selected questions
@@ -47,13 +53,13 @@ def on_leave():
 
 @socketio.on('load_quiz')
 def load_quiz(data):
-    global selected_questions
+    global selected_questions, current_question
     exam_name = data['exam_name']
-    start_question = data['start_question'] - 1  # Adjust for 0-based indexing
+    start_question = data.get('start_question', 1) - 1  # Default to question 1 if not provided
     selected_questions = backend.select_exam(exam_name)
     if selected_questions:
         num_questions = len(selected_questions)
-        current_question['index'] = start_question
+        current_question['index'] = start_question  # Set the starting question index
         emit('quiz_loaded', {"success": True, "num_questions": num_questions, "start_question": start_question + 1}, room=request.sid)
     else:
         emit('quiz_loaded', {"success": False}, room=request.sid)
@@ -62,10 +68,14 @@ def load_quiz(data):
 def start_quiz():
     if participants and selected_questions:
         current_question['started'] = True
-        emit('new_question', selected_questions[current_question['index']], room='quiz')
-        # Also emit the question to the host 
-        emit('new_question', selected_questions[current_question['index']], room=request.sid)  
-        emit('enable_end_quiz', room=request.sid) # Enable "End Quiz" for the host
+        index = current_question['index']
+        question = selected_questions[index]
+        # Send the starting question to all clients
+        emit('new_question', {"question": question["question"], "options": question["options"], "index": index + 1}, room='quiz')
+        emit('enable_end_quiz', room=request.sid)  # Enable "End Quiz" for the host
+
+
+
 
 @socketio.on('restart_quiz')
 def restart_quiz():
@@ -106,12 +116,11 @@ def next_question():
     if current_question['index'] < len(selected_questions):
         question = selected_questions[current_question['index']]
         emit('clear_results', room='quiz')
-        emit('new_question', question, room='quiz')
-        # Also emit the question to the host
-        emit('new_question', question, room=request.sid)  
+        emit('new_question', {"question": question["question"], "options": question["options"], "index": current_question['index'] + 1}, room='quiz')
     else:
         final_results = calculate_final_results()
         emit('display_final_results', final_results, room='quiz')
+
 
 @socketio.on('end_quiz')
 def end_quiz():
@@ -148,4 +157,4 @@ def reset_quiz():
         participant["score"] = 0
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=7860, debug=True)
+    socketio.run(app, host='0.0.0.0', port=7860, debug=False)

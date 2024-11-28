@@ -1,0 +1,110 @@
+[
+    {
+        "question": "A medical company deployed a disease detection model on Amazon Bedrock. To comply with privacy policies, the company wants to prevent the model from including personal patient information in its responses. The company also wants to receive notification when policy violations occur. Which solution meets these requirements?",
+        "options": [
+            "Use Amazon Macie to scan the model's output for sensitive data and set up alerts for potential violations.",
+            "Configure AWS CloudTrail to monitor the model's responses and create alerts for any detected personal information.",
+            "Use Guardrails for Amazon Bedrock to filter content. Set up Amazon CloudWatch alarms for notification of policy violations.",
+            "Implement Amazon SageMaker Model Monitor to detect data drift and receive alerts when model quality degrades."
+        ],
+        "correct": [
+            "C"
+        ]
+    },
+    {
+        "question": "A large retailer receives thousands of customer support inquiries about products every day. The customer support inquiries need to be processed and responded to quickly. The company wants to implement Agents for Amazon Bedrock. What are the key benefits of using Amazon Bedrock agents that could help this retailer?",
+        "options": [
+            "Generation of custom foundation models (FMs) to predict customer needs",
+            "Automation of repetitive tasks and orchestration of complex workflows",
+            "Automatically calling multiple foundation models (FMs) and consolidating the results",
+            "Selecting the foundation model (FM) based on predefined criteria and metrics"
+        ],
+        "correct": [
+            "B"
+        ]
+    },
+    {
+        "question": "A company is building an ML model. The company collected new data and analyzed the data by creating a correlation matrix, calculating statistics, and visualizing the data. Which stage of the ML pipeline is the company currently in?",
+        "options": [
+            "Data pre-processing",
+            "Feature engineering",
+            "Exploratory data analysis",
+            "Hyperparameter tuning"
+        ],
+        "correct": [
+            "C"
+        ]
+    },
+    {
+        "question": "Which feature of Amazon OpenSearch Service gives companies the ability to build vector database applications?",
+        "options": [
+            "Integration with Amazon S3 for object storage",
+            "Support for geospatial indexing and queries",
+            "Scalable index management and nearest neighbor search capability",
+            "Ability to perform real-time analysis on streaming data"
+        ],
+        "correct": [
+            "C"
+        ]
+    },
+    {
+        "question": "A company wants to use a large language model (LLM) to develop a conversational agent. The company needs to prevent the LLM from being manipulated with common prompt engineering techniques to perform undesirable actions or expose sensitive information. Which action will reduce these risks?",
+        "options": [
+            "Create a prompt template that teaches the LLM to detect attack patterns.",
+            "Increase the temperature parameter on invocation requests to the LLM.",
+            "Avoid using LLMs that are not listed in Amazon SageMaker.",
+            "Decrease the number of input tokens on invocations of the LLM."
+        ],
+        "correct": [
+            "A"
+        ]
+    },
+    {
+        "question": "Which option is a use case for generative AI models?",
+        "options": [
+            "Improving network security by using intrusion detection systems",
+            "Creating photorealistic images from text descriptions for digital marketing",
+            "Enhancing database performance by using optimized indexing",
+            "Analyzing financial data to forecast stock market trends"
+        ],
+        "correct": [
+            "B"
+        ]
+    },
+    {
+        "question": "A company wants to use a large language model (LLM) on Amazon Bedrock for sentiment analysis. The company wants to know how much information can fit into one prompt. Which consideration will inform the company's decision?",
+        "options": [
+            "Temperature",
+            "Context window",
+            "Batch size",
+            "Model size"
+        ],
+        "correct": [
+            "B"
+        ]
+    },
+    {
+        "question": "A company needs to choose a model from Amazon Bedrock to use internally. The company must identify a model that generates responses in a style that the company's employees prefer. What should the company do to meet these requirements?",
+        "options": [
+            "Evaluate the models by using built-in prompt datasets.",
+            "Evaluate the models by using a human workforce and custom prompt datasets.",
+            "Use public model leaderboards to identify the model.",
+            "Use the model InvocationLatency runtime metrics in Amazon CloudWatch when trying models."
+        ],
+        "correct": [
+            "B"
+        ]
+    },
+    {
+        "question": "A company wants to use a large language model (LLM) on Amazon Bedrock for sentiment analysis. The company needs the LLM to produce more consistent responses to the same input prompt. Which adjustment to an inference parameter should the company make to meet these requirements?",
+        "options": [
+            "Decrease the temperature value",
+            "Increase the temperature value",
+            "Decrease the length of output tokens",
+            "Increase the maximum generation length"
+        ],
+        "correct": [
+            "A"
+        ]
+    }
+]
